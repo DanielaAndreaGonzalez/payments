@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: payments-postgres
+    environment:
+      POSTGRES_DB: paymentsdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - payments-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Aplicación Spring Boot
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: payments-app
+    ports:
+      - "8080:8080"
+    environment:
+      # Configuración de base de datos
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/paymentsdb
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      
+      # API Key de seguridad
+      API_KEY: my-secret-api-key
+      
+      # Configuración adicional
+      SPRING_PROFILES_ACTIVE: prod
+      JAVA_OPTS: -Xmx512m -Xms256m
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - payments-network
+    restart: unless-stopped
+
+# Volúmenes persistentes
+volumes:
+  pgdata:
+    driver: local
+
+# Red interna
+networks:
+  payments-network:
+    driver: bridge
