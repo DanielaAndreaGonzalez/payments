@@ -2,7 +2,38 @@
 
 Microservicio REST para gestión de pagos de créditos, desarrollado con Spring Boot 4.0.3 y Java 17.
 
-## 📋 Características
+
+
+# Solución punto 6.
+**Caso de Producción**
+
+**1. Si aparecen errores 500 intermitentes ¿qué se revisaría primero?**
+    Identificaría de qué servicio provienen dicho errores, para ello revisaría los logs para tener un contexto más detallado. Luego, prosigo con los pasos posteriores para determinar qué está causando los errores. A partir de este análisis identificaría tiempos, ids, requests, adevertencias, response, frecuencia de los errores, datos. De acuerdo con lo anterior, con un análisis de 30 minutos llegaría a hacer suficiente para determinar la gravedad, el origen, posibles consecuencias de no ser solucionado.
+
+**2. Si la base de datos responde lento. ¿ qué pasos técnicos tomaría?**
+   Si la base de datos responde lento, posiblemente haya alguna consulta o tabla bloqueada, esto podría ser a causa de muchas peticiones, falta de espacio, límite de pool de conexiones, etc...
+   Dependiente de lo que se encuentre, seguiría estos pasos:
+   2.1. Revisar métricas del gestor de base de datos
+   2.2 En caso de que sea una consulta el objetivo sería encontrar en dónde está esa consulta y qué usuario la está ejecutando
+   2.3 Tomar tiempos, el usuario, el origen y posibles IDs
+   2.4 En caso de que se identifique que es una consulta lenta y está tomando mucho tiempo en responder el paso técnico a tomar es una posible optimización o refactorización de dicha consulta, por ejemplo: 
+   En PosgresSQL puedo usar *EXPLAIN ANALIZE* para obtener estadísticas, rutas, índices, bucles, que se encuentren haciendo la consulta y así más fácil obtener una posible refactorización.
+
+**3. ¿Qué métricas básicas monitorearías en un sistema financiero?**
+En un sistema financiero es importante garantizar la confiabilidad y operabilidad del sistema, por lo tanto, las métricas ayudarían a determinar tiempos, errores, advertencias por ejemplo de la respuesta de las funcionalidades, dentro de las métricas básicas monitorearía las siguientes:
+    3.1 Funcionamiento correcto de los sistemas core del sistema financiero, por ejemplo: de cada API monitorear la cantidad de respuestas 4xx, 5xx y su respectiva trazabilidad
+    3.2 Dependiendo de la lógica del negocio, identificar rango de valores dentro de los datos tipicos que estos no estén fuera de datos atípicos, desembolsos "irregulares", cuentas contables incorrectas, clientes y/o cuentas inactivos
+
+# Solución punto 7
+**Uso de herramientas de IA**
+- Para el presente proyecto se utilizó herramientas de IA, como agentes y chat de Gemini.
+- La IA dentro del proyecto se usó para realizar una adecuada planeación de arquitectura, entendimiento de los requerimientos y solución de errores con tecnologías utilizadas
+- Para validar el código generado se usó un agente de IA dentro del editor de código Visual Studio Code en modo planeación inicialmente, esto con el objetivo de poder validar por parte mía el paso a paso que la herramienta IA iba a implementar, entonces en este punto se valida por ejemplo: versiones, métodos, arquitectura, scripts. Una vez finaliado lo anterior, cuando estuve de acuerdo con lo planteado por el agente, se procede a la implementación inicial, luego se procede a codificar y ejecutar el proyecto por parte mía; cuando se presentaron errores, se utilizaba el agente IA para identificar estos errores, entenderlos y lograr solucionarlos. 
+
+
+
+
+##  Características
 
 - ✅ API RESTful con endpoints para crear y consultar pagos
 - ✅ Validación de datos de entrada
@@ -13,7 +44,7 @@ Microservicio REST para gestión de pagos de créditos, desarrollado con Spring 
 - ✅ Dockerización completa
 - ✅ Arquitectura en capas (Controller → Service → Repository)
 
-## 🚀 Inicio Rápido
+##  Inicio Rápido
 
 ### Requisitos Previos
 
@@ -44,7 +75,7 @@ docker compose down
 docker compose down -v
 ```
 
-La aplicación estará disponible en: `http://localhost:8080`
+La aplicación está disponible en: `http://localhost:8080`
 
 ## 📡 Endpoints
 
@@ -187,7 +218,7 @@ curl -H "X-API-KEY: my-secret-api-key" \
 }
 ```
 
-## 🔐 Seguridad
+##  Seguridad
 
 Todos los endpoints excepto `/health` requieren autenticación mediante API Key.
 
@@ -204,11 +235,11 @@ La API Key se configura mediante variable de entorno `API_KEY`.
 
 | Variable | Descripción | Default | Requerida |
 |----------|-------------|---------|-----------|
-| `API_KEY` | Clave de autenticación para endpoints | `default-dev-key` | ✅ |
-| `SPRING_DATASOURCE_URL` | URL de conexión PostgreSQL | `jdbc:postgresql://localhost:5432/paymentsdb` | ✅ |
-| `DB_USERNAME` | Usuario de base de datos | `postgres` | ✅ |
-| `DB_PASSWORD` | Contraseña de base de datos | `postgres` | ✅ |
-| `JAVA_OPTS` | Opciones JVM | - | ❌ |
+| `API_KEY` | Clave de autenticación para endpoints | `default-dev-key` | SI |
+| `SPRING_DATASOURCE_URL` | URL de conexión PostgreSQL | `jdbc:postgresql://localhost:5432/paymentsdb` | SI |
+| `DB_USERNAME` | Usuario de base de datos | `postgres` | SI |
+| `DB_PASSWORD` | Contraseña de base de datos | `postgres` | SI|
+| `JAVA_OPTS` | Opciones JVM | - | NO |
 
 ### Modificar API Key
 
@@ -349,7 +380,7 @@ src/
         └── PaymentsApplicationTests.java
 ```
 
-## 🧪 Pruebas
+##  Pruebas
 
 ### Casos de Prueba
 
@@ -427,7 +458,7 @@ export DB_PASSWORD=tu_password
 mvn spring-boot:run
 ```
 
-## 📝 Decisiones Técnicas
+##  Decisiones Técnicas
 
 ### Lombok
 Se utiliza Lombok para reducir boilerplate code (`@Data`, `@Builder`, `@Slf4j`).
@@ -449,7 +480,7 @@ Usado para valores monetarios para evitar problemas de precisión con floating-p
 ### LocalDate
 Sin componente de tiempo (timezone-agnostic) para simplificar lógica de idempotencia.
 
-## 📦 Tecnologías
+##  Tecnologías
 
 - **Java 17**
 - **Spring Boot 4.0.3**
@@ -461,11 +492,3 @@ Sin componente de tiempo (timezone-agnostic) para simplificar lógica de idempot
 - **Maven**
 - **Docker & Docker Compose**
 
-## 📄 Licencia
-
-Este proyecto es para fines educativos y de evaluación técnica.
-
----
-
-**Desarrollado por:** TestKOA  
-**Fecha:** Febrero 2026
