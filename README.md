@@ -56,7 +56,13 @@ En un sistema financiero es importante garantizar la confiabilidad y operabilida
 
 ```bash
 # Compilar y empaquetar la aplicación
+Visual estudio
+./mvnw clean package -DskipTests
+./mvnw clean package
+
+mvn clean package -DskipTests
 mvn clean package
+
 ```
 
 ### Ejecución con Docker
